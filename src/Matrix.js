@@ -28,6 +28,14 @@ class Matrix {
 
   randomize(min, max) {
 
+    if (typeof min === "undefined") {
+      min = 0;
+      max = 1;
+    } else if (typeof max === "undefined") {
+      max = min;
+      min = 0;
+    }
+
     for (let i = 0; i < this.rows; i++) {
 
       for (let j = 0; j < this.cols; j++) {
@@ -89,7 +97,7 @@ class Matrix {
 
         for (let j = 0; j < m.cols; j++) {
 
-          let value = m.matrix[i][j] + this.matrix[i][j];
+          let value = this.matrix[i][j] + m.matrix[i][j];
           this.matrix[i][j] = value;
 
         }
@@ -165,7 +173,7 @@ class Matrix {
 
         for (let j = 0; j < m.cols; j++) {
 
-          let value = m.matrix[i][j] * this.matrix[i][j];
+          let value = this.matrix[i][j] * m.matrix[i][j];
           this.matrix[i][j] = value;
 
         }
@@ -469,4 +477,10 @@ class Matrix {
     }
 
   }
+}
+
+if (typeof module !== "undefined") {
+
+  module.exports = Matrix;
+
 }

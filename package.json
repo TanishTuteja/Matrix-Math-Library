@@ -1,0 +1,27 @@
+{
+  "name": "matrix-math-library",
+  "version": "1.0.0",
+  "description": "A library for doing matrix math",
+  "main": "src/Matrix.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TanishTuteja/Matrix-Math-Library.git"
+  },
+  "keywords": [
+    "matrix",
+    "math",
+    "library"
+  ],
+  "author": "TanishTuteja",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TanishTuteja/Matrix-Math-Library/issues"
+  },
+  "homepage": "https://github.com/TanishTuteja/Matrix-Math-Library#readme",
+  "devDependencies": {
+    "jest": "^24.5.0"
+  }
+}

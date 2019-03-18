@@ -1,5 +1,12 @@
 class Matrix {
 
+  /**
+   * Creates a new Matrix object to store data.
+   * @constructor
+   * @param {Number} rows - The number of rows in the matrix.
+   * @param {Number} cols - The number of columns in the matrix.
+   */
+
   constructor(rows, cols) {
 
     this.rows = rows;
@@ -20,12 +27,20 @@ class Matrix {
 
   }
 
+  /**
+   * Displays the matrix in the console.
+   */
   display() {
 
     console.table(this.matrix);
 
   }
 
+  /**
+   * Randomizes the elements of the matrix with floating point numbers ranging from min to max.
+   * @param {Number} [min=0] - The minimum value of elements (inclusive).
+   * @param {Number} [max=1] - The maximum value of elements (exclusive).
+   */
   randomize(min, max) {
 
     if (typeof min === "undefined") {
@@ -57,6 +72,10 @@ class Matrix {
       }
   }*/
 
+  /**
+   * Applies a function to all elements of the matrix.
+   * @param {function} func - The function to be applied to the elements.
+   */
   map(func) {
 
     for (let i = 0; i < this.rows; i++) {

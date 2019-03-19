@@ -154,3 +154,44 @@ test('static toArray test', () => {
   );
 
 });
+
+test('static fromArray test', () => {
+
+  let array = [12, 10, 5, 4, 3]
+  let m = Matrix.fromArray(array);
+
+  expect(m).toEqual({
+    rows: 5,
+    cols: 1,
+    matrix: [
+      [12],
+      [10],
+      [5],
+      [4],
+      [3]
+    ]
+  });
+
+});
+
+test('static transpose test', () => {
+
+  let m = new Matrix(3, 2);
+  m.matrix = [
+    [1, 5],
+    [2, 0.5],
+    [0.01, 100]
+  ]
+
+  let mt = Matrix.transpose(m);
+
+  expect(mt).toEqual({
+    rows: 2,
+    cols: 3,
+    matrix: [
+      [1, 2, 0.01],
+      [5, 0.5, 100]
+    ]
+  });
+
+});

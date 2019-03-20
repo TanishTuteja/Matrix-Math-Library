@@ -4,7 +4,8 @@
   "description": "A library for doing matrix math",
   "main": "src/Matrix.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "generate-docs": "./node_modules/.bin/jsdoc src/ -d docs/"
   },
   "repository": {
     "type": "git",

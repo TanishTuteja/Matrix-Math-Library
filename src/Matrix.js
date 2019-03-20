@@ -91,6 +91,10 @@ class Matrix {
 
   }
 
+  /**
+   * Converts this matrix to a 1-D array by going from left to right for each row.
+   * @returns {Number[]} result - A 1-D array containing the elements of the matrix.
+   */
   toArray() {
 
     var result = [];
@@ -255,6 +259,12 @@ class Matrix {
 
   }
 
+  /**
+   * Converts the specified matrix to a 1-D array by going from left to right for each row of the matrix.
+   * @param {Matrix} m - The matrix object to be converted to array.
+   * @returns {Number[]} result - A 1-D array containing the elements of the matrix m.
+   * @static
+   */
   static toArray(m) {
 
     var result = [];
@@ -435,6 +445,13 @@ class Matrix {
 
   }
 
+  /**
+   * Multiplies two matrices according to the rules of matrix product. The number of columns of a must be equal to the number of rows of b.
+   * @param {Matrix} a - First matrix object.
+   * @param {Matrix} b - Second matrix object.
+   * @returns {Matrix} result - The resultant matrix having number of rows equal to a and number of columns equal to b.
+   * @static
+   */
   static matrixProduct(a, b) {
 
     if (a instanceof Matrix && b instanceof Matrix && a.cols === b.rows) {

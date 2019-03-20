@@ -108,7 +108,7 @@ class Matrix {
 
   }
 
-  addElementWise(m) {
+  addElementwise(m) {
 
     if (m instanceof Matrix) {
 
@@ -146,7 +146,7 @@ class Matrix {
 
   }
 
-  subtractElementWise(m) {
+  subtractElementwise(m) {
 
     if (m instanceof Matrix) {
 
@@ -184,7 +184,7 @@ class Matrix {
 
   }
 
-  multiplyElementWise(m) {
+  multiplyElementwise(m) {
 
     if (m instanceof Matrix) {
 

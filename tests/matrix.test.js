@@ -98,6 +98,188 @@ test('non-static map test', () => {
 
 });
 
+test('non-static toArray test', () => {
+
+  let m = new Matrix(3, 2);
+  m.matrix = [
+    [1, 2],
+    [3, 4],
+    [5, 6]
+  ];
+
+  let array = m.toArray();
+
+  expect(array).toEqual(
+    [1, 2, 3, 4, 5, 6]
+  );
+
+});
+
+test('non-static addElementwise test', () => {
+
+  let m1 = new Matrix(3, 2);
+  m1.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let m2 = new Matrix(3, 2);
+  m2.matrix = [
+    [12, 0.9],
+    [500, 43],
+    [-1, -0.5]
+  ];
+
+  m1.addElementwise(m2);
+
+  expect(m1).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [22, -14.1],
+      [512, 43.5],
+      [4, 15.5]
+    ]
+  });
+
+});
+
+test('non-static addScalar test', () => {
+
+  let m = new Matrix(3, 2);
+  m.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let scalar = -9
+
+  m.addScalar(scalar);
+
+  expect(m).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [1, -24],
+      [3, -8.5],
+      [-4, 7]
+    ]
+  });
+
+});
+
+test('non-static subtractElementwise test', () => {
+
+  let m1 = new Matrix(3, 2);
+  m1.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let m2 = new Matrix(3, 2);
+  m2.matrix = [
+    [-12, -0.9],
+    [-500, -43],
+    [1, 0.5]
+  ];
+
+  m1.subtractElementwise(m2);
+
+  expect(m1).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [22, -14.1],
+      [512, 43.5],
+      [4, 15.5]
+    ]
+  });
+
+});
+
+test('non-static subtractScalar test', () => {
+
+  let m = new Matrix(3, 2);
+  m.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let scalar = 9
+
+  m.subtractScalar(scalar);
+
+  expect(m).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [1, -24],
+      [3, -8.5],
+      [-4, 7]
+    ]
+  });
+
+});
+
+test('non-static multiplyElementwise test', () => {
+
+  let m1 = new Matrix(3, 2);
+  m1.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let m2 = new Matrix(3, 2);
+  m2.matrix = [
+    [-12, -0.9],
+    [-500, -43],
+    [1, 0.5]
+  ];
+
+  m1.multiplyElementwise(m2);
+
+  expect(m1).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [-120, 13.5],
+      [-6000, -21.5],
+      [5, 8]
+    ]
+  });
+
+});
+
+test('non-static multiplyScalar test', () => {
+
+  let m = new Matrix(3, 2);
+  m.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let scalar = -2
+
+  m.multiplyScalar(scalar);
+
+  expect(m).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [-20, 30],
+      [-24, -1],
+      [-10, -32]
+    ]
+  });
+
+});
+
 test('static map test', () => {
 
   let m = new Matrix(3, 2);
@@ -121,20 +303,22 @@ test('static map test', () => {
 
 });
 
-test('non-static toArray test', () => {
+test('static fromArray test', () => {
 
-  let m = new Matrix(3, 2);
-  m.matrix = [
-    [1, 2],
-    [3, 4],
-    [5, 6]
-  ];
+  let array = [12, 10, 5, 4, 3]
+  let m = Matrix.fromArray(array);
 
-  let array = m.toArray();
-
-  expect(array).toEqual(
-    [1, 2, 3, 4, 5, 6]
-  );
+  expect(m).toEqual({
+    rows: 5,
+    cols: 1,
+    matrix: [
+      [12],
+      [10],
+      [5],
+      [4],
+      [3]
+    ]
+  });
 
 });
 
@@ -155,20 +339,195 @@ test('static toArray test', () => {
 
 });
 
-test('static fromArray test', () => {
+test('static addElementwise test', () => {
 
-  let array = [12, 10, 5, 4, 3]
-  let m = Matrix.fromArray(array);
+  let m1 = new Matrix(3, 2);
+  m1.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
 
-  expect(m).toEqual({
-    rows: 5,
-    cols: 1,
+  let m2 = new Matrix(3, 2);
+  m2.matrix = [
+    [12, 0.9],
+    [500, 43],
+    [-1, -0.5]
+  ];
+
+  let result = Matrix.addElementwise(m1, m2);
+
+  expect(result).toEqual({
+    rows: 3,
+    cols: 2,
     matrix: [
-      [12],
-      [10],
-      [5],
-      [4],
-      [3]
+      [22, -14.1],
+      [512, 43.5],
+      [4, 15.5]
+    ]
+  });
+
+});
+
+test('static addScalar test', () => {
+
+  let m = new Matrix(3, 2);
+  m.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let scalar = -9
+
+  let result = Matrix.addScalar(m, scalar);
+
+  expect(result).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [1, -24],
+      [3, -8.5],
+      [-4, 7]
+    ]
+  });
+
+});
+
+test('static subtractElementwise test', () => {
+
+  let m1 = new Matrix(3, 2);
+  m1.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let m2 = new Matrix(3, 2);
+  m2.matrix = [
+    [-12, -0.9],
+    [-500, -43],
+    [1, 0.5]
+  ];
+
+  let result = Matrix.subtractElementwise(m1, m2);
+
+  expect(result).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [22, -14.1],
+      [512, 43.5],
+      [4, 15.5]
+    ]
+  });
+
+});
+
+test('static subtractScalar test', () => {
+
+  let m = new Matrix(3, 2);
+  m.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let scalar = 9
+
+  let result = Matrix.subtractScalar(m, scalar);
+
+  expect(result).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [1, -24],
+      [3, -8.5],
+      [-4, 7]
+    ]
+  });
+
+});
+
+test('static multiplyElementwise test', () => {
+
+  let m1 = new Matrix(3, 2);
+  m1.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let m2 = new Matrix(3, 2);
+  m2.matrix = [
+    [-12, -0.9],
+    [-500, -43],
+    [1, 0.5]
+  ];
+
+  let result = Matrix.multiplyElementwise(m1, m2);
+
+  expect(result).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [-120, 13.5],
+      [-6000, -21.5],
+      [5, 8]
+    ]
+  });
+
+});
+
+test('static multiplyScalar test', () => {
+
+  let m = new Matrix(3, 2);
+  m.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let scalar = -2
+
+  let result = Matrix.multiplyScalar(m, scalar);
+
+  expect(result).toEqual({
+    rows: 3,
+    cols: 2,
+    matrix: [
+      [-20, 30],
+      [-24, -1],
+      [-10, -32]
+    ]
+  });
+
+});
+
+test('static matrixProduct test', () => {
+
+  let m1 = new Matrix(3, 2);
+  m1.matrix = [
+    [10, -15],
+    [12, 0.5],
+    [5, 16]
+  ];
+
+  let m2 = new Matrix(2, 4);
+  m2.matrix = [
+    [12, 9, 0.2, 0.01],
+    [500, 43, 9, -10]
+  ];
+
+  let result = Matrix.matrixProduct(m1, m2);
+
+  expect(result).toEqual({
+    rows: 3,
+    cols: 4,
+    matrix: [
+      [-7380, -555, -133, 150.1],
+      [394, 129.5, 6.9, -4.88],
+      [8060, 733, 145, -159.95]
     ]
   });
 

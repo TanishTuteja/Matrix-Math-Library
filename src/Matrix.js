@@ -96,7 +96,7 @@ class Matrix {
           }
         }
       } else {
-        throw new DimensionError("addElementwise", this.matrix, m);
+        throw new DimensionError("addElementwise", this, m);
       }
     } else {
       throw new MatrixTypeError("addElementwise");
@@ -122,7 +122,7 @@ class Matrix {
           }
         }
       } else {
-        throw new DimensionError("subtractElementwise", this.matrix, m);
+        throw new DimensionError("subtractElementwise", this, m);
       }
     } else {
       throw new MatrixTypeError("subtractElementwise");

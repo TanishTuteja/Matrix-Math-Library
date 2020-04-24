@@ -7,6 +7,13 @@ class Matrix {
    */
 
   constructor(rows, cols) {
+    if (isNaN(rows) || isNaN(cols)) {
+      throw new MatrixTypeError("constructor", "Number");
+    }
+
+    rows = Math.floor(rows);
+    cols = Math.floor(cols);
+
     this.rows = rows;
     this.cols = cols;
     this.matrix = [];
@@ -62,11 +69,15 @@ class Matrix {
    * @param {function} func - The function to be applied to the elements.
    */
   map(func) {
-    for (let i = 0; i < this.rows; i++) {
-      for (let j = 0; j < this.cols; j++) {
-        let val = this.matrix[i][j];
-        this.matrix[i][j] = func(val, i, j);
+    if (func instanceof Function) {
+      for (let i = 0; i < this.rows; i++) {
+        for (let j = 0; j < this.cols; j++) {
+          let val = this.matrix[i][j];
+          this.matrix[i][j] = func(val, i, j);
+        }
       }
+    } else {
+      throw new MatrixTypeError("map", "Function");
     }
   }
 
@@ -99,7 +110,7 @@ class Matrix {
         throw new DimensionError(false, "addElementwise", this, m);
       }
     } else {
-      throw new MatrixTypeError("addElementwise");
+      throw new MatrixTypeError("addElementwise", "Matrix");
     }
   }
 
@@ -125,7 +136,7 @@ class Matrix {
         throw new DimensionError(false, "subtractElementwise", this, m);
       }
     } else {
-      throw new MatrixTypeError("subtractElementwise");
+      throw new MatrixTypeError("subtractElementwise", "Matrix");
     }
   }
 
@@ -140,14 +151,18 @@ class Matrix {
 
   multiplyElementwise(m) {
     if (m instanceof Matrix) {
-      for (let i = 0; i < m.rows; i++) {
-        for (let j = 0; j < m.cols; j++) {
-          let value = this.matrix[i][j] * m.matrix[i][j];
-          this.matrix[i][j] = value;
+      if (m.rows == this.rows && m.cols === this.cols) {
+        for (let i = 0; i < m.rows; i++) {
+          for (let j = 0; j < m.cols; j++) {
+            let value = this.matrix[i][j] * m.matrix[i][j];
+            this.matrix[i][j] = value;
+          }
         }
+      } else {
+        throw new DimensionError(false, "multiplyElementwise", this, m);
       }
     } else {
-      console.log("Invalid types in addElementWise, Matrix expected");
+      throw new MatrixTypeError("multiplyElementwise", "Matrix");
     }
   }
 
@@ -328,9 +343,7 @@ class Matrix {
 
       return result;
     } else {
-      console.log(
-        "Invalid types in matrixProduct, cols of matrix a should be equal to rows of matrix b expected"
-      );
+      console.log("Invalid types in matrixProduct, cols of matrix a should be equal to rows of matrix b expected");
       return null;
     }
   }

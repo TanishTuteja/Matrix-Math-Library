@@ -1,29 +1,54 @@
 const Matrix = require("../src/Matrix");
+const errors = require("../src/Errors.js");
+const MatrixTypeError = errors.MatrixTypeError;
+const DimensionError = errors.DimensionError;
 
-test("constructor test normal", () => {
-  let m = new Matrix(3, 2);
+describe("constructor tests", () => {
+  test("constructor test normal", () => {
+    let m = new Matrix(3, 2);
 
-  expect(m).toEqual({
-    rows: 3,
-    cols: 2,
-    matrix: [
-      [0, 0],
-      [0, 0],
-      [0, 0],
-    ],
+    expect(m).toEqual({
+      rows: 3,
+      cols: 2,
+      matrix: [
+        [0, 0],
+        [0, 0],
+        [0, 0],
+      ],
+    });
   });
-});
 
-test("constructor test decimal", () => {
-  let m = new Matrix(2.1, 4.2);
+  test("constructor test decimal", () => {
+    let m = new Matrix(2.1, 4.2);
 
-  expect(m).toEqual({
-    rows: 2,
-    cols: 4,
-    matrix: [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ],
+    expect(m).toEqual({
+      rows: 2,
+      cols: 4,
+      matrix: [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ],
+    });
+  });
+
+  test("constructor test 0<r<1", () => {
+    expect.assertions(2);
+    try {
+      let m = new Matrix(0.1, 4.2);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+      expect(error).toHaveProperty("message", "Invalid values in Matrix constructor, rows and cols must be greater than or equal to 1");
+    }
+  });
+
+  test("constructor test argument type", () => {
+    expect.assertions(2);
+    try {
+      let m = new Matrix(10, "check");
+    } catch (error) {
+      expect(error).toBeInstanceOf(MatrixTypeError);
+      expect(error).toHaveProperty("message", "Invalid types in constructor, Number and Number expected");
+    }
   });
 });
 

@@ -8,7 +8,7 @@ class Matrix {
 
   constructor(rows, cols) {
     if (isNaN(rows) || isNaN(cols)) {
-      throw new MatrixTypeError("constructor", "Number");
+      throw new MatrixTypeError("constructor", "Number and Number");
     }
 
     rows = Math.floor(rows);

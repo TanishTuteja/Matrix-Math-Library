@@ -27,15 +27,6 @@ test("constructor test decimal", () => {
   });
 });
 
-test("display test", () => {
-  global.console.table = jest.fn();
-
-  let m = new Matrix(3, 2);
-  m.display();
-
-  expect(global.console.table).toHaveBeenCalledWith(m.matrix);
-});
-
 test("randomize test with min and max", () => {
   let m = new Matrix(3, 2);
   m.randomize(25, 32);

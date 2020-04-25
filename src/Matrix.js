@@ -14,6 +14,10 @@ class Matrix {
     rows = Math.floor(rows);
     cols = Math.floor(cols);
 
+    if (rows <= 0 || cols <= 0) {
+      throw new Error("Invalid values in Matrix constructor, rows and cols must be greater than or equal to 1");
+    }
+
     this.rows = rows;
     this.cols = cols;
     this.matrix = [];
@@ -25,13 +29,6 @@ class Matrix {
         this.matrix[i][j] = 0;
       }
     }
-  }
-
-  /**
-   * Displays the matrix in the console.
-   */
-  display() {
-    console.table(this.matrix);
   }
 
   /**
@@ -55,29 +52,19 @@ class Matrix {
     }
   }
 
-  //This method uses p5.js, to be implemented independently
-  /*randomizeGaussian() {
-      for (let i = 0; i < this.rows; i++) {
-          for (let j = 0; j < this.cols; j++) {
-              this.matrix[i][j] = randomGaussian();
-          }
-      }
-  }*/
-
   /**
    * Applies a function to all elements of the matrix.
    * @param {function} func - The function to be applied to the elements.
    */
   map(func) {
-    if (func instanceof Function) {
-      for (let i = 0; i < this.rows; i++) {
-        for (let j = 0; j < this.cols; j++) {
-          let val = this.matrix[i][j];
-          this.matrix[i][j] = func(val, i, j);
-        }
+    if (!(func instanceof Function)) {
+      throw new MatrixTypeError("map", "function");
+    }
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        let val = this.matrix[i][j];
+        this.matrix[i][j] = func(val, i, j);
       }
-    } else {
-      throw new MatrixTypeError("map", "Function");
     }
   }
 
@@ -86,10 +73,10 @@ class Matrix {
    * @returns {Number[]} result - A 1-D array containing the elements of the matrix.
    */
   toArray() {
-    var result = [];
+    let result = [];
 
-    for (var i = 0; i < this.rows; i++) {
-      for (var j = 0; j < this.cols; j++) {
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
         result.push(this.matrix[i][j]);
       }
     }
@@ -98,19 +85,17 @@ class Matrix {
   }
 
   addElementwise(m) {
-    if (m instanceof Matrix) {
-      if (m.rows === this.rows && m.cols === this.cols) {
-        for (let i = 0; i < m.rows; i++) {
-          for (let j = 0; j < m.cols; j++) {
-            let value = this.matrix[i][j] + m.matrix[i][j];
-            this.matrix[i][j] = value;
-          }
-        }
-      } else {
-        throw new DimensionError(false, "addElementwise", this, m);
-      }
-    } else {
+    if (!(m instanceof Matrix)) {
       throw new MatrixTypeError("addElementwise", "Matrix");
+    }
+    if (m.rows !== this.rows && m.cols !== this.cols) {
+      throw new DimensionError(false, "addElementwise", this, m);
+    }
+    for (let i = 0; i < m.rows; i++) {
+      for (let j = 0; j < m.cols; j++) {
+        let value = this.matrix[i][j] + m.matrix[i][j];
+        this.matrix[i][j] = value;
+      }
     }
   }
 
@@ -124,19 +109,17 @@ class Matrix {
   }
 
   subtractElementwise(m) {
-    if (m instanceof Matrix) {
-      if (m.rows === this.rows && m.cols === this.cols) {
-        for (let i = 0; i < m.rows; i++) {
-          for (let j = 0; j < m.cols; j++) {
-            let value = this.matrix[i][j] - m.matrix[i][j];
-            this.matrix[i][j] = value;
-          }
-        }
-      } else {
-        throw new DimensionError(false, "subtractElementwise", this, m);
-      }
-    } else {
+    if (!(m instanceof Matrix)) {
       throw new MatrixTypeError("subtractElementwise", "Matrix");
+    }
+    if (m.rows !== this.rows && m.cols !== this.cols) {
+      throw new DimensionError(false, "subtractElementwise", this, m);
+    }
+    for (let i = 0; i < m.rows; i++) {
+      for (let j = 0; j < m.cols; j++) {
+        let value = this.matrix[i][j] - m.matrix[i][j];
+        this.matrix[i][j] = value;
+      }
     }
   }
 
@@ -150,19 +133,17 @@ class Matrix {
   }
 
   multiplyElementwise(m) {
-    if (m instanceof Matrix) {
-      if (m.rows == this.rows && m.cols === this.cols) {
-        for (let i = 0; i < m.rows; i++) {
-          for (let j = 0; j < m.cols; j++) {
-            let value = this.matrix[i][j] * m.matrix[i][j];
-            this.matrix[i][j] = value;
-          }
-        }
-      } else {
-        throw new DimensionError(false, "multiplyElementwise", this, m);
-      }
-    } else {
+    if (!(m instanceof Matrix)) {
       throw new MatrixTypeError("multiplyElementwise", "Matrix");
+    }
+    if (m.rows !== this.rows && m.cols !== this.cols) {
+      throw new DimensionError(false, "multiplyElementwise", this, m);
+    }
+    for (let i = 0; i < m.rows; i++) {
+      for (let j = 0; j < m.cols; j++) {
+        let value = this.matrix[i][j] * m.matrix[i][j];
+        this.matrix[i][j] = value;
+      }
     }
   }
 
@@ -176,7 +157,10 @@ class Matrix {
   }
 
   static map(m, func) {
-    var result = new Matrix(m.rows, m.cols);
+    if (!(m instanceof Matrix && func instanceof Function)) {
+      throw new MatrixTypeError("map", "Matrix and function");
+    }
+    let result = new Matrix(m.rows, m.cols);
 
     for (let i = 0; i < m.rows; i++) {
       for (let j = 0; j < m.cols; j++) {
@@ -189,9 +173,12 @@ class Matrix {
   }
 
   static fromArray(array) {
-    var result = new Matrix(array.length, 1);
+    if (!Array.isArray(array)) {
+      throw new MatrixTypeError("fromArray", "array");
+    }
+    let result = new Matrix(array.length, 1);
 
-    for (var i = 0; i < array.length; i++) {
+    for (let i = 0; i < array.length; i++) {
       result.matrix[i][0] = array[i];
     }
 
@@ -205,10 +192,14 @@ class Matrix {
    * @static
    */
   static toArray(m) {
-    var result = [];
+    if (!(m instanceof Matrix)) {
+      throw new MatrixTypeError("toArray", "Matrix");
+    }
 
-    for (var i = 0; i < m.rows; i++) {
-      for (var j = 0; j < m.cols; j++) {
+    let result = [];
+
+    for (let i = 0; i < m.rows; i++) {
+      for (let j = 0; j < m.cols; j++) {
         result.push(m.matrix[i][j]);
       }
     }
@@ -217,105 +208,111 @@ class Matrix {
   }
 
   static addElementwise(a, b) {
-    if (a instanceof Matrix && b instanceof Matrix) {
-      let result = new Matrix(a.rows, a.cols);
-
-      for (let i = 0; i < a.rows; i++) {
-        for (let j = 0; j < a.cols; j++) {
-          result.matrix[i][j] = a.matrix[i][j] + b.matrix[i][j];
-        }
-      }
-
-      return result;
-    } else {
-      console.log("Invalid types in addElementWise, Matrix expected");
-      return null;
+    if (!(a instanceof Matrix && b instanceof Matrix)) {
+      throw new MatrixTypeError("addElementwise", "Matrix and Matrix");
     }
+
+    if (a.rows !== b.rows || a.cols !== b.cols) {
+      throw new DimensionError(true, "addElementwise", a, b);
+    }
+
+    let result = new Matrix(a.rows, a.cols);
+
+    for (let i = 0; i < a.rows; i++) {
+      for (let j = 0; j < a.cols; j++) {
+        result.matrix[i][j] = a.matrix[i][j] + b.matrix[i][j];
+      }
+    }
+
+    return result;
   }
 
   static addScalar(matrix, scalar) {
-    if (matrix instanceof Matrix) {
-      let result = new Matrix(matrix.rows, matrix.cols);
-
-      for (let i = 0; i < matrix.rows; i++) {
-        for (let j = 0; j < matrix.cols; j++) {
-          result.matrix[i][j] = matrix.matrix[i][j] + scalar;
-        }
-      }
-
-      return result;
-    } else {
-      console.log("Invalid types in addScalar, Matrix expected");
-      return null;
+    if (!(matrix instanceof Matrix)) {
+      throw new MatrixTypeError("addScalar", "Matrix");
     }
+
+    let result = new Matrix(matrix.rows, matrix.cols);
+
+    for (let i = 0; i < matrix.rows; i++) {
+      for (let j = 0; j < matrix.cols; j++) {
+        result.matrix[i][j] = matrix.matrix[i][j] + scalar;
+      }
+    }
+
+    return result;
   }
 
   static subtractElementwise(a, b) {
-    if (a instanceof Matrix && b instanceof Matrix) {
-      let result = new Matrix(a.rows, a.cols);
-
-      for (let i = 0; i < a.rows; i++) {
-        for (let j = 0; j < a.cols; j++) {
-          result.matrix[i][j] = a.matrix[i][j] - b.matrix[i][j];
-        }
-      }
-
-      return result;
-    } else {
-      console.log("Invalid types in subtractElementWise, Matrix expected");
-      return null;
+    if (!(a instanceof Matrix && b instanceof Matrix)) {
+      throw new MatrixTypeError("subtractElementwise", "Matrix and Matrix");
     }
+
+    if (a.rows !== b.rows || a.cols !== b.cols) {
+      throw new DimensionError(true, "subtractElementwise", a, b);
+    }
+
+    let result = new Matrix(a.rows, a.cols);
+
+    for (let i = 0; i < a.rows; i++) {
+      for (let j = 0; j < a.cols; j++) {
+        result.matrix[i][j] = a.matrix[i][j] - b.matrix[i][j];
+      }
+    }
+
+    return result;
   }
 
   static subtractScalar(matrix, scalar) {
-    if (matrix instanceof Matrix) {
-      let result = new Matrix(matrix.rows, matrix.cols);
-
-      for (let i = 0; i < matrix.rows; i++) {
-        for (let j = 0; j < matrix.cols; j++) {
-          result.matrix[i][j] = matrix.matrix[i][j] - scalar;
-        }
-      }
-
-      return result;
-    } else {
-      console.log("Invalid types in subtractScalar, Matrix expected");
-      return null;
+    if (!(matrix instanceof Matrix)) {
+      throw new MatrixTypeError("subtractScalar", "Matrix");
     }
+
+    let result = new Matrix(matrix.rows, matrix.cols);
+
+    for (let i = 0; i < matrix.rows; i++) {
+      for (let j = 0; j < matrix.cols; j++) {
+        result.matrix[i][j] = matrix.matrix[i][j] - scalar;
+      }
+    }
+
+    return result;
   }
 
   static multiplyElementwise(a, b) {
-    if (a instanceof Matrix && b instanceof Matrix) {
-      let result = new Matrix(a.rows, a.cols);
-
-      for (let i = 0; i < a.rows; i++) {
-        for (let j = 0; j < a.cols; j++) {
-          result.matrix[i][j] = a.matrix[i][j] * b.matrix[i][j];
-        }
-      }
-
-      return result;
-    } else {
-      console.log("Invalid types in multiplyElementWise, Matrix expected");
-      return null;
+    if (!(a instanceof Matrix && b instanceof Matrix)) {
+      throw new MatrixTypeError("multiplyElementwise", "Matrix and Matrix");
     }
+
+    if (a.rows !== b.rows || a.cols !== b.cols) {
+      throw new DimensionError(true, "multiplyElementwise", a, b);
+    }
+
+    let result = new Matrix(a.rows, a.cols);
+
+    for (let i = 0; i < a.rows; i++) {
+      for (let j = 0; j < a.cols; j++) {
+        result.matrix[i][j] = a.matrix[i][j] * b.matrix[i][j];
+      }
+    }
+
+    return result;
   }
 
   static multiplyScalar(matrix, scalar) {
-    if (matrix instanceof Matrix) {
-      let result = new Matrix(matrix.rows, matrix.cols);
-
-      for (let i = 0; i < matrix.rows; i++) {
-        for (let j = 0; j < matrix.cols; j++) {
-          result.matrix[i][j] = matrix.matrix[i][j] * scalar;
-        }
-      }
-
-      return result;
-    } else {
-      console.log("Invalid types in multiplyScalar, Matrix expected");
-      return null;
+    if (!(matrix instanceof Matrix)) {
+      throw new MatrixTypeError("multiplyScalar", "Matrix");
     }
+
+    let result = new Matrix(matrix.rows, matrix.cols);
+
+    for (let i = 0; i < matrix.rows; i++) {
+      for (let j = 0; j < matrix.cols; j++) {
+        result.matrix[i][j] = matrix.matrix[i][j] * scalar;
+      }
+    }
+
+    return result;
   }
 
   /**
@@ -326,43 +323,43 @@ class Matrix {
    * @static
    */
   static matrixProduct(a, b) {
-    if (a instanceof Matrix && b instanceof Matrix && a.cols === b.rows) {
-      let result = new Matrix(a.rows, b.cols);
-
-      for (let i = 0; i < result.rows; i++) {
-        for (let j = 0; j < result.cols; j++) {
-          let sum = 0;
-
-          for (let k = 0; k < a.cols; k++) {
-            sum += a.matrix[i][k] * b.matrix[k][j];
-          }
-
-          result.matrix[i][j] = sum;
-        }
-      }
-
-      return result;
-    } else {
-      console.log("Invalid types in matrixProduct, cols of matrix a should be equal to rows of matrix b expected");
-      return null;
+    if (!(a instanceof Matrix && b instanceof Matrix)) {
+      throw new MatrixTypeError("matrixProduct", "Matrix and Matrix");
     }
+    if (a.cols !== b.rows) {
+      throw new Error("Invalid matrix dimensions in matrixProduct, cols of a must be equal to rows of b");
+    }
+
+    let result = new Matrix(a.rows, b.cols);
+
+    for (let i = 0; i < result.rows; i++) {
+      for (let j = 0; j < result.cols; j++) {
+        let sum = 0;
+
+        for (let k = 0; k < a.cols; k++) {
+          sum += a.matrix[i][k] * b.matrix[k][j];
+        }
+
+        result.matrix[i][j] = sum;
+      }
+    }
+
+    return result;
   }
 
   static transpose(matrix) {
-    if (matrix instanceof Matrix) {
-      let result = new Matrix(matrix.cols, matrix.rows);
-
-      for (let i = 0; i < matrix.rows; i++) {
-        for (let j = 0; j < matrix.cols; j++) {
-          result.matrix[j][i] = matrix.matrix[i][j];
-        }
-      }
-
-      return result;
-    } else {
-      console.log("Invalid types in transpose, Matrix expected");
-      return null;
+    if (!(matrix instanceof Matrix)) {
+      throw new MatrixTypeError("transpose", "Matrix");
     }
+    let result = new Matrix(matrix.cols, matrix.rows);
+
+    for (let i = 0; i < matrix.rows; i++) {
+      for (let j = 0; j < matrix.cols; j++) {
+        result.matrix[j][i] = matrix.matrix[i][j];
+      }
+    }
+
+    return result;
   }
 }
 

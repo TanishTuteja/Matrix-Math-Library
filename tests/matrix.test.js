@@ -3,7 +3,7 @@ const errors = require("../src/Errors.js");
 const MatrixTypeError = errors.MatrixTypeError;
 const DimensionError = errors.DimensionError;
 
-describe("constructor tests", () => {
+describe("Constructor Tests", () => {
   test("constructor test normal", () => {
     let m = new Matrix(3, 2);
 
@@ -41,6 +41,16 @@ describe("constructor tests", () => {
     }
   });
 
+  test("constructor test negative c", () => {
+    expect.assertions(2);
+    try {
+      let m = new Matrix(3.2, -1.2);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+      expect(error).toHaveProperty("message", "Invalid values in Matrix constructor, rows and cols must be greater than or equal to 1");
+    }
+  });
+
   test("constructor test argument type", () => {
     expect.assertions(2);
     try {
@@ -52,74 +62,172 @@ describe("constructor tests", () => {
   });
 });
 
-test("randomize test with min and max", () => {
-  let m = new Matrix(3, 2);
-  m.randomize(25, 32);
+describe("Randomize Tests", () => {
+  test("randomize test with min and max", () => {
+    let m = new Matrix(3, 2);
+    m.randomize(25, 32);
 
-  for (let i = 0; i < m.rows; i++) {
-    for (let j = 0; j < m.cols; j++) {
-      expect(m.matrix[i][j]).toBeGreaterThanOrEqual(25);
-      expect(m.matrix[i][j]).toBeLessThan(32);
+    for (let i = 0; i < m.rows; i++) {
+      for (let j = 0; j < m.cols; j++) {
+        expect(m.matrix[i][j]).toBeGreaterThanOrEqual(25);
+        expect(m.matrix[i][j]).toBeLessThan(32);
+      }
     }
-  }
-});
+  });
 
-test("randomize test with only max", () => {
-  let m = new Matrix(3, 2);
-  m.randomize(45);
+  test("randomize test with only max", () => {
+    let m = new Matrix(3, 2);
+    m.randomize(45);
 
-  for (let i = 0; i < m.rows; i++) {
-    for (let j = 0; j < m.cols; j++) {
-      expect(m.matrix[i][j]).toBeGreaterThanOrEqual(0);
-      expect(m.matrix[i][j]).toBeLessThan(45);
+    for (let i = 0; i < m.rows; i++) {
+      for (let j = 0; j < m.cols; j++) {
+        expect(m.matrix[i][j]).toBeGreaterThanOrEqual(0);
+        expect(m.matrix[i][j]).toBeLessThan(45);
+      }
     }
-  }
-});
+  });
 
-test("randomize test with no arguements", () => {
-  let m = new Matrix(3, 2);
-  m.randomize();
+  test("randomize test with no arguements", () => {
+    let m = new Matrix(3, 2);
+    m.randomize();
 
-  for (let i = 0; i < m.rows; i++) {
-    for (let j = 0; j < m.cols; j++) {
-      expect(m.matrix[i][j]).toBeGreaterThanOrEqual(0);
-      expect(m.matrix[i][j]).toBeLessThan(1);
+    for (let i = 0; i < m.rows; i++) {
+      for (let j = 0; j < m.cols; j++) {
+        expect(m.matrix[i][j]).toBeGreaterThanOrEqual(0);
+        expect(m.matrix[i][j]).toBeLessThan(1);
+      }
     }
-  }
-});
-
-test("non-static map test", () => {
-  let m = new Matrix(3, 2);
-  m.matrix = [
-    [1, 2],
-    [3, 4],
-    [5, 6],
-  ];
-
-  m.map((x) => x * 5);
-
-  expect(m).toEqual({
-    rows: 3,
-    cols: 2,
-    matrix: [
-      [5, 10],
-      [15, 20],
-      [25, 30],
-    ],
   });
 });
 
-test("non-static toArray test", () => {
-  let m = new Matrix(3, 2);
-  m.matrix = [
-    [1, 2],
-    [3, 4],
-    [5, 6],
-  ];
+describe("Map Function to Matrix Test", () => {
+  test("non-static map test normal", () => {
+    let m = new Matrix(3, 2);
+    m.matrix = [
+      [1, 2],
+      [3, 4],
+      [5, 6],
+    ];
 
-  let array = m.toArray();
+    m.map((x) => x * 5);
 
-  expect(array).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(m).toEqual({
+      rows: 3,
+      cols: 2,
+      matrix: [
+        [5, 10],
+        [15, 20],
+        [25, 30],
+      ],
+    });
+  });
+
+  test("static map test normal", () => {
+    let m = new Matrix(3, 2);
+    m.matrix = [
+      [1, 2],
+      [3, 4],
+      [5, 6],
+    ];
+
+    let m2 = Matrix.map(m, (x) => x * 5);
+
+    expect(m2).toEqual({
+      rows: 3,
+      cols: 2,
+      matrix: [
+        [5, 10],
+        [15, 20],
+        [25, 30],
+      ],
+    });
+  });
+
+  test("non-static map test argument non-function", () => {
+    expect.assertions(2);
+
+    let m = new Matrix(3, 2);
+    m.matrix = [
+      [1, 2],
+      [3, 4],
+      [5, 6],
+    ];
+
+    try {
+      m.map(new Matrix(2, 4));
+    } catch (error) {
+      expect(error).toBeInstanceOf(MatrixTypeError);
+      expect(error).toHaveProperty("message", "Invalid types in map, function expected");
+    }
+  });
+
+  test("static map test argument non-function", () => {
+    expect.assertions(2);
+
+    let m = new Matrix(3, 2);
+    m.matrix = [
+      [1, 2],
+      [3, 4],
+      [5, 6],
+    ];
+
+    try {
+      Matrix.map(m, new Matrix(2, 4));
+    } catch (error) {
+      expect(error).toBeInstanceOf(MatrixTypeError);
+      expect(error).toHaveProperty("message", "Invalid types in map, Matrix and function expected");
+    }
+  });
+
+  test("static map test argument non-matrix", () => {
+    expect.assertions(2);
+
+    try {
+      Matrix.map("Test", (x) => x * 10);
+    } catch (error) {
+      expect(error).toBeInstanceOf(MatrixTypeError);
+      expect(error).toHaveProperty("message", "Invalid types in map, Matrix and function expected");
+    }
+  });
+});
+
+describe("toArray Tests", () => {
+  test("non-static toArray test normal", () => {
+    let m = new Matrix(3, 2);
+    m.matrix = [
+      [1, 2],
+      [3, 4],
+      [5, 6],
+    ];
+
+    let array = m.toArray();
+
+    expect(array).toEqual([1, 2, 3, 4, 5, 6]);
+  });
+
+  test("static toArray test normal", () => {
+    let m = new Matrix(3, 2);
+    m.matrix = [
+      [1, 2],
+      [3, 4],
+      [5, 6],
+    ];
+
+    let array = Matrix.toArray(m);
+
+    expect(array).toEqual([1, 2, 3, 4, 5, 6]);
+  });
+
+  test("static toArray test argument non-Matrix", () => {
+    expect.assertions(2);
+
+    try {
+      Matrix.toArray(20);
+    } catch (error) {
+      expect(error).toBeInstanceOf(MatrixTypeError);
+      expect(error).toHaveProperty("message", "Invalid types in toArray, Matrix expected");
+    }
+  });
 });
 
 test("non-static addElementwise test", () => {
@@ -275,27 +383,6 @@ test("non-static multiplyScalar test", () => {
   });
 });
 
-test("static map test", () => {
-  let m = new Matrix(3, 2);
-  m.matrix = [
-    [1, 2],
-    [3, 4],
-    [5, 6],
-  ];
-
-  let m2 = Matrix.map(m, (x) => x * 5);
-
-  expect(m2).toEqual({
-    rows: 3,
-    cols: 2,
-    matrix: [
-      [5, 10],
-      [15, 20],
-      [25, 30],
-    ],
-  });
-});
-
 test("static fromArray test", () => {
   let array = [12, 10, 5, 4, 3];
   let m = Matrix.fromArray(array);
@@ -305,19 +392,6 @@ test("static fromArray test", () => {
     cols: 1,
     matrix: [[12], [10], [5], [4], [3]],
   });
-});
-
-test("static toArray test", () => {
-  let m = new Matrix(3, 2);
-  m.matrix = [
-    [1, 2],
-    [3, 4],
-    [5, 6],
-  ];
-
-  let array = Matrix.toArray(m);
-
-  expect(array).toEqual([1, 2, 3, 4, 5, 6]);
 });
 
 test("static addElementwise test", () => {

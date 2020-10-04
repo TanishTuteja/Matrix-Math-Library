@@ -8,7 +8,7 @@ class Matrix {
 
   constructor(rows, cols) {
     if (isNaN(rows) || isNaN(cols)) {
-      throw new MatrixTypeError("constructor", "Number");
+      throw new MatrixTypeError("constructor", "Number and Number");
     }
 
     rows = Math.floor(rows);
@@ -154,6 +154,79 @@ class Matrix {
         this.matrix[i][j] = value;
       }
     }
+  }
+
+  copy() {
+    let m = new Matrix(this.rows, this.cols);
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        m.matrix[i][j] = this.matrix[i][j];
+      }
+    }
+    return m;
+  }
+
+  determinant() {
+    //Error Checking
+    if (this.rows !== this.cols) {
+      throw new Error("Unexpected Matrix dimensions in determinant, the matrix must be a square matrix (rows = cols). Found : rows = " + this.rows + " cols = " + this.cols);
+    }
+
+    //Base case
+    if (this.rows === 1) {
+      return this.matrix[0][0];
+    }
+
+    //Actual calculation using recursion
+    let sum = 0;
+    let subarray = this.matrix[0];
+    let submatrix = Matrix.removeRow(this, 0);
+    for (let i = 0; i < this.cols; i++) {
+      let temp = subarray[i] * Matrix.determinant(Matrix.removeCol(submatrix, i));
+      sum = i % 2 == 0 ? sum + temp : sum - temp;
+    }
+    return sum;
+  }
+
+  static determinant(m) {
+    //Error Checking
+    if (!(m instanceof Matrix)) {
+      throw new MatrixTypeError("determinant", "Matrix");
+    }
+    if (m.rows !== m.cols) {
+      throw new Error("Unexpected Matrix dimensions in determinant, the matrix must be a square matrix (rows = cols). Found : rows = " + m.rows + " cols = " + m.cols);
+    }
+
+    //Base case
+    if (m.rows === 1) {
+      return m.matrix[0][0];
+    }
+
+    //Actual calculation using recursion
+    let sum = 0;
+    let subarray = m.matrix[0];
+    let submatrix = this.removeRow(m, 0);
+    for (let i = 0; i < m.cols; i++) {
+      let temp = subarray[i] * this.determinant(this.removeCol(submatrix, i));
+      sum = i % 2 == 0 ? sum + temp : sum - temp;
+    }
+    return sum;
+  }
+
+  static removeRow(m, r) {
+    let res = m.copy();
+    res.rows--;
+    res.matrix.splice(r, 1);
+    return res;
+  }
+
+  static removeCol(m, c) {
+    let res = m.copy();
+    res.cols--;
+    for (let i = 0; i < res.rows; i++) {
+      res.matrix[i].splice(c, 1);
+    }
+    return res;
   }
 
   static map(m, func) {
